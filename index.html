@@ -1,51 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <!-- fontawesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- VUE -->
     <script src='https://unpkg.com/vue@3/dist/vue.global.js'></script>
 
     <!-- style -->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div id="app">
-        <div class="container">
+        <div class="container flex">
             <!-- list chat section -->
             <section class="list-section">
-                <div class="me-bar"></div>
-                <div class="notification-on-off"></div>
+                <div class="me-bar flex">
+                    <div class="img-profile flex">
+                        <img :src="'img/avatar'+myProfile.avatar+'.jpg'" alt="">
+                        <div class="my-name">{{ myProfile.name }}</div>
+                    </div>
+                    <div class="profile-right-btn">
+                        <i class="fa-solid fa-circle-notch"></i>
+                        <i class="fa-solid fa-message"></i>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </div>
+                <div class="notification-on-off flex">
+                    <div class="notification-on-off-icon">
+                        <i class="fa-solid fa-bell-slash"></i>
+                    </div>
+                    <div class="notification-on-off-message">
+                        Ricevi notifiche di nuovi messaggi
+                        <div>Attiva notifiche desktop</div>
+                    </div>
+                </div>
                 <div class="search-chat flex">
                     <span class="search-chat-btn">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
                     <div class="search-chat-input">
-                        <input type="text" placeholder="Cerca o inizia una nuova chat">
+                        <input type="text" placeholder="Cerca o inizia una nuova chat" v-model="findChat" @keyup="findContact">
                     </div>
                 </div>
                 <div class="chat-list">
-                    <ul>
-                        <li v-for="(contact, index) in contacts">
-                            <div class="img-profile">
-                                <img src="img/avatar_1.jpg" alt="">
-                            </div>
-                        </li>
-                    </ul>
+                    <ul v-if="findChatArray.length === 0">
+                        <li v-for="(contact, index) in contacts" class="flex" @click="visibleChat = index">
+                            
+                                <div class="img-profile">
+                                    <img :src="'img/avatar'+contact.avatar+'.jpg'" alt="">
+                                </div>
+                                <div class="contact-name">
+                                    {{ contact.name }}
+                                    <div v-for="(message,index) in contact.messages">
+                                        <span class="last-message" v-if="index === contact.messages.length - 1">
+                                            {{ message.message }}
+                                        </span>
+                                    </div>
+                                    <div class="last-time-sent">12:00</div>
+                                </div>
+                            
+                            </li>
+                        </ul>
+                        <ul v-else>
+                            <li v-for="(contact, index) in findChatArray" class="flex" @click="visibleChat = index">
+                                
+                                    <div class="img-profile">
+                                        <img :src="'img/avatar'+contact.avatar+'.jpg'" alt="">
+                                    </div>
+                                    <div class="contact-name">
+                                        {{ contact.name }}
+                                        <div v-for="(message,index) in contact.messages">
+                                            <span class="last-message" v-if="index === contact.messages.length - 1">
+                                                {{ message.message }}
+                                            </span>
+                                        </div>
+                                        <div class="last-time-sent">12:00</div>
+                                    </div>
+                                
+                                </li>
+                            </ul>
                 </div>
             </section>
             <!-- chat section -->
-            <section class="chat-section"></section>
+            <section class="chat-section">
+                <div class="no-chat" v-if="visibleChat === null">
+                    <h1>Benvenuto su Boolzapp</h1>
+                    <h3>Seleziona la chat che vuoi aprire</h3>
+                </div>
+                <div v-else  class="chat flex">
+                    <div class="contact-chat-bar flex">
+                        <div class="img-profile flex">
+                            <img :src="'img/avatar'+ contacts[visibleChat].avatar+'.jpg'" alt="">
+                            <div class="contact-name">{{ contacts[visibleChat].name }}
+                                <div>Ultimo accesso alle 12:00</div>
+                            </div>
+                            
+                        </div>
+                        <div class="contact-bar-right-btn">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <i class="fa-solid fa-paperclip"></i>
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </div>
+                        
+                    </div>
+                    <div class="chat-messages flex">
+
+                        <div v-for="message in contacts[visibleChat].messages" class="messages" :class="message.status === 'sent' ? 'sent':'recived'">
+                            
+                            
+                            
+                            {{ message.message }}
+                            
+                        </div>
+                    </div>
+                    <div class="send-message-bar flex">
+                        <i class="fa-regular fa-face-smile"></i>
+                        <input type="text" placeholder="Scrivi un messaggio" v-model="messageToSend" @keyup.enter="sendMessage">
+                        <i class="fa-solid fa-microphone"></i>
+                    </div>
+                </div>
+            
+            </section>
         </div>
     </div>
-    
+
 
 
     <script src="js/script.js"></script>
 </body>
+
 </html>

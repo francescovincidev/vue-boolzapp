@@ -3,6 +3,15 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
+            findChatArray: [],
+            findChat: "",
+            messageToSend: "",
+            visibleChat: null,
+            myProfile: {
+                name: 'Sofia',
+                avatar: '_io',
+
+            },
             contacts: [
                 {
                     name: 'Michele',
@@ -170,5 +179,44 @@ createApp({
         };
 
     },
+    methods: {
+        sendMessage() {
+            this.contacts[this.visibleChat].messages.push({
+                date: new Date(),
+                message: this.messageToSend,
+                status: 'sent'
+            })
+            this.messageToSend = ""
+
+
+        },
+        // da fixare
+        findContact() {
+            console.log(this.contacts.length);
+
+
+            for (let i = 0; i < this.contacts.length; i++) {
+                if (this.contacts[i].name.includes(this.findChat) && !this.findChatArray.includes(this.contacts[i])) {
+                    this.findChatArray.push(this.contacts[i]);
+                    
+                }
+            }
+
+            for(let i = 0; i < this.findChatArray.length; i++){
+
+                if(!this.findChatArray[i].includes(this.findChat)){
+                    this.findChatArray.pop(this.findChatArray[i]);
+                    console.log("Se spunto");
+                    
+                }
+                console.log(this.findChatArray[i].name);
+            }
+
+            if(this.findChat === ""){
+                this.findChatArray = [];
+            }
+        }
+    },
+
 
 }).mount("#app");

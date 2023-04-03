@@ -14,6 +14,9 @@
     <!-- VUE -->
     <script src='https://unpkg.com/vue@3/dist/vue.global.js'></script>
 
+    <!-- luxon -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+
     <!-- style -->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -52,55 +55,42 @@
                     </div>
                 </div>
                 <div class="chat-list">
-                    <ul v-if="findChatArray.length === 0">
-                        <li v-for="(contact, index) in contacts" class="flex" @click="visibleChat = index">
+
+                        <ul >
                             
-                                <div class="img-profile">
-                                    <img :src="'img/avatar'+contact.avatar+'.jpg'" alt="">
-                                </div>
-                                <div class="contact-name">
-                                    {{ contact.name }}
-                                    <div v-for="(message,index) in contact.messages">
-                                        <span class="last-message" v-if="index === contact.messages.length - 1">
-                                            {{ message.message }}
-                                        </span>
-                                    </div>
-                                    <div class="last-time-sent">12:00</div>
-                                </div>
-                            
-                            </li>
-                        </ul>
-                        <ul v-else>
-                            <li v-for="(contact, index) in findChatArray" class="flex" @click="visibleChat = index">
-                                
-                                    <div class="img-profile">
-                                        <img :src="'img/avatar'+contact.avatar+'.jpg'" alt="">
-                                    </div>
-                                    <div class="contact-name">
-                                        {{ contact.name }}
-                                        <div v-for="(message,index) in contact.messages">
-                                            <span class="last-message" v-if="index === contact.messages.length - 1">
-                                                {{ message.message }}
-                                            </span>
+
+                                <li v-for="(contact, index) in  filteredContacts" class="flex" @click="selectContact(contact)" >
+                                    
+                                        <div class="img-profile">
+                                            <img :src="'img/avatar'+contact.avatar+'.jpg'" alt="">
                                         </div>
-                                        <div class="last-time-sent">12:00</div>
-                                    </div>
-                                
-                                </li>
-                            </ul>
+                                        <div class="contact-name">
+                                            {{ contact.name }}
+                                            <div v-for="(message,index) in contact.messages">
+                                                <span class="last-message" v-if="index === contact.messages.length - 1">
+                                                    {{ message.message }}
+                                                    <div class="last-time-sent">{{ message.date.slice(11, 16) }}</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    
+                                    </li>
+                           
+                        </ul>
+
                 </div>
             </section>
             <!-- chat section -->
             <section class="chat-section">
-                <div class="no-chat" v-if="visibleChat === null">
+                <div class="no-chat" v-if="selectedContact === null">
                     <h1>Benvenuto su Boolzapp</h1>
                     <h3>Seleziona la chat che vuoi aprire</h3>
                 </div>
                 <div v-else  class="chat flex">
                     <div class="contact-chat-bar flex">
                         <div class="img-profile flex">
-                            <img :src="'img/avatar'+ contacts[visibleChat].avatar+'.jpg'" alt="">
-                            <div class="contact-name">{{ contacts[visibleChat].name }}
+                            <img :src="'img/avatar'+ selectedContact.avatar+'.jpg'" alt="">
+                            <div class="contact-name">{{ selectedContact.name }}
                                 <div>Ultimo accesso alle 12:00</div>
                             </div>
                             
@@ -114,17 +104,17 @@
                     </div>
                     <div class="chat-messages flex">
 
-                        <div v-for="message in contacts[visibleChat].messages" class="messages" :class="message.status === 'sent' ? 'sent':'recived'">
-                            
-                            
-                            
-                            {{ message.message }}
-                            
+                        <div v-for="message in selectedContact.messages" class="messages" :class="message.status === 'sent' ? 'sent':'recived'">
+                            <div>
+
+                                {{ message.message }}
+                            </div>
+                            <div class="message-time">{{ message.date.slice(11, 16) }}</div>
                         </div>
                     </div>
                     <div class="send-message-bar flex">
                         <i class="fa-regular fa-face-smile"></i>
-                        <input type="text" placeholder="Scrivi un messaggio" v-model="messageToSend" @keyup.enter="sendMessage">
+                        <input type="text" placeholder="Scrivi un messaggio" v-model="messageToSend" @keyup.enter="sendMessage" >
                         <i class="fa-solid fa-microphone"></i>
                     </div>
                 </div>

@@ -1,12 +1,16 @@
 const { createApp } = Vue;
 
+const dt = luxon.DateTime;
+console.log(dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'));
+
+
+
 createApp({
     data() {
         return {
-            findChatArray: [],
             findChat: "",
             messageToSend: "",
-            visibleChat: null,
+            selectedContact: null,
             myProfile: {
                 name: 'Sofia',
                 avatar: '_io',
@@ -181,42 +185,44 @@ createApp({
     },
     methods: {
         sendMessage() {
-            this.contacts[this.visibleChat].messages.push({
-                date: new Date(),
-                message: this.messageToSend,
-                status: 'sent'
-            })
-            this.messageToSend = ""
+            if (this.messageToSend.trim() !== "") {
+                this.selectedContact.messages.push({
+                    date: dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
+                    message: this.messageToSend,
+                    status: 'sent'
+                });
+               
+                setTimeout(this.receiveMessage, 1000);
+            }
+            this.messageToSend = "";
+
 
 
         },
-        // da fixare
+        receiveMessage() {
+            this.selectedContact.messages.push({
+                date: dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
+                message: 'ok',
+                status: 'received'
+            });
+        },
+
         findContact() {
-            console.log(this.contacts.length);
-
-
-            for (let i = 0; i < this.contacts.length; i++) {
-                if (this.contacts[i].name.includes(this.findChat) && !this.findChatArray.includes(this.contacts[i])) {
-                    this.findChatArray.push(this.contacts[i]);
-                    
-                }
-            }
-
-            for(let i = 0; i < this.findChatArray.length; i++){
-
-                if(!this.findChatArray[i].includes(this.findChat)){
-                    this.findChatArray.pop(this.findChatArray[i]);
-                    console.log("Se spunto");
-                    
-                }
-                console.log(this.findChatArray[i].name);
-            }
-
-            if(this.findChat === ""){
-                this.findChatArray = [];
-            }
+            return this.contacts.filter(contact => {
+                return contact.name.toLowerCase().includes(this.findChat.toLowerCase())
+            })
+        },
+        selectContact(contact) {
+            this.selectedContact = contact
+            console.log(this.selectedContact);
         }
     },
+
+    computed: {
+        filteredContacts() {
+            return this.findContact()
+        }
+    }
 
 
 }).mount("#app");

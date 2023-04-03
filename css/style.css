@@ -20,7 +20,7 @@ li{
 
 
 body{
-    background: linear-gradient(180deg, #009688 20%, #DADBD3 20%);
+    background: linear-gradient(to bottom, #009688 0px, #009688 20vh, #DADBD3 20vh, #DADBD3);
     height: 100vh;
     width: 100%;
     padding: 20px 0;
@@ -155,6 +155,7 @@ body{
 .chat-list{
     height: calc(100% - 120px);
     overflow: auto;
+    background-color: white;
 
 }
 .img-profile{
@@ -196,7 +197,7 @@ body{
 
 .last-time-sent{
     position: absolute;
-    top: 5px;
+    bottom: 5px;
     right: 5px;
 
 }
@@ -228,25 +229,38 @@ body{
     padding: 20px;
     flex-direction: column;
     flex-grow: 1;
+    overflow: auto;
 }
 
 /* messages */
 .messages{
     padding: 10px;
     border-radius: 10px;
-    max-width: 40%;
+    max-width: 60%;
     margin-bottom: 10px;
     font-size: .7rem;
+    position: relative;
+    padding-right: 30px;
+    word-wrap: break-word;
 }
+
 
 .sent{
     background-color: #D5F9BA;
     align-self: flex-end;
-
+    
 }
 
 .recived{
     background-color: white;
+    align-self: flex-start;
+}
+
+.message-time{
+    font-size: .5rem;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
 }
 
 /* send message */

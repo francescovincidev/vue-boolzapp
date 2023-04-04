@@ -4,10 +4,11 @@ const dt = luxon.DateTime;
 console.log(dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'));
 
 
-
 createApp({
     data() {
         return {
+            sender: null,
+            greySelected:null,
             findChat: "",
             messageToSend: "",
             selectedContact: null,
@@ -185,26 +186,25 @@ createApp({
     },
     methods: {
         sendMessage() {
+            this.sender = this.selectedContact
             if (this.messageToSend.trim() !== "") {
                 this.selectedContact.messages.push({
                     date: dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
                     message: this.messageToSend,
                     status: 'sent'
-                });
-               
-                setTimeout(this.receiveMessage, 1000);
+                })   
+                setTimeout(this.receiveMessage, 1000)
             }
             this.messageToSend = "";
 
-
-
         },
         receiveMessage() {
-            this.selectedContact.messages.push({
+            this.sender.messages.push({
                 date: dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
                 message: 'ok',
                 status: 'received'
-            });
+            })
+            
         },
 
         findContact() {
@@ -215,7 +215,19 @@ createApp({
         selectContact(contact) {
             this.selectedContact = contact
             console.log(this.selectedContact);
+          
+
+        },
+
+        deleteMessage(index){
+            this.selectedContact.messages.splice(index, 1);
+        },
+
+        infoMessage(index){
+            alert("Data: " + this.selectedContact.messages[index].date + "\nMessaggio: " + this.selectedContact.messages[index].message + "\nStato: " + this.selectedContact.messages[index].status);
+            
         }
+
     },
 
     computed: {

@@ -26,6 +26,7 @@
         <div class="container flex">
             <!-- list chat section -->
             <section class="list-section">
+                <!-- me account -->
                 <div class="me-bar flex">
                     <div class="img-profile flex">
                         <img :src="'img/avatar'+myProfile.avatar+'.jpg'" alt="">
@@ -37,6 +38,8 @@
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                     </div>
                 </div>
+
+                <!-- notifications -->
                 <div class="notification-on-off flex">
                     <div class="notification-on-off-icon">
                         <i class="fa-solid fa-bell-slash"></i>
@@ -46,79 +49,98 @@
                         <div>Attiva notifiche desktop</div>
                     </div>
                 </div>
+
+                <!-- search chat -->
                 <div class="search-chat flex">
                     <span class="search-chat-btn">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
                     <div class="search-chat-input">
-                        <input type="text" placeholder="Cerca o inizia una nuova chat" v-model="findChat" @keyup="findContact">
+                        <input type="text" placeholder="Cerca o inizia una nuova chat" v-model="findChat"
+                            @keyup="findContact">
                     </div>
                 </div>
+                <!-- list chat -->
                 <div class="chat-list">
-
-                        <ul >
-                            
-
-                                <li v-for="(contact, index) in  filteredContacts" class="flex" @click="selectContact(contact)" >
-                                    
-                                        <div class="img-profile">
-                                            <img :src="'img/avatar'+contact.avatar+'.jpg'" alt="">
-                                        </div>
-                                        <div class="contact-name">
-                                            {{ contact.name }}
-                                            <div v-for="(message,index) in contact.messages">
-                                                <span class="last-message" v-if="index === contact.messages.length - 1">
-                                                    {{ message.message }}
-                                                    <div class="last-time-sent">{{ message.date.slice(11, 16) }}</div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    
-                                    </li>
-                           
-                        </ul>
-
+                    <ul>
+                        <li v-for="(contact, index) in  filteredContacts" class="flex" @click="greySelected = contact.name, selectContact(contact)" :class="greySelected === contact.name ? 'selected':''" >
+                            <div class="img-profile">
+                                <img :src="'img/avatar'+contact.avatar+'.jpg'" alt="">
+                            </div>
+                            <div class="contact-name">
+                                {{ contact.name }}
+                                <div v-for="(message,index) in contact.messages">
+                                    <span class="last-message" v-if="index === contact.messages.length - 1">
+                                        {{ message.message }}
+                                        <div class="last-time-sent">{{ message.date.slice(11, 16) }}</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </section>
             <!-- chat section -->
             <section class="chat-section">
+                <!-- no selected chat -->
                 <div class="no-chat" v-if="selectedContact === null">
                     <h1>Benvenuto su Boolzapp</h1>
                     <h3>Seleziona la chat che vuoi aprire</h3>
                 </div>
-                <div v-else  class="chat flex">
+
+                <!-- selected chat -->
+                <div v-else class="chat flex">
+
+                    <!-- top bar selected chat -->
                     <div class="contact-chat-bar flex">
                         <div class="img-profile flex">
                             <img :src="'img/avatar'+ selectedContact.avatar+'.jpg'" alt="">
                             <div class="contact-name">{{ selectedContact.name }}
                                 <div>Ultimo accesso alle 12:00</div>
                             </div>
-                            
+
                         </div>
                         <div class="contact-bar-right-btn">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <i class="fa-solid fa-paperclip"></i>
                             <i class="fa-solid fa-ellipsis-vertical"></i>
                         </div>
-                        
+
                     </div>
+
+                    <!-- container selected chat -->
                     <div class="chat-messages flex">
-
-                        <div v-for="message in selectedContact.messages" class="messages" :class="message.status === 'sent' ? 'sent':'recived'">
+                        <div v-for="(message,index) in selectedContact.messages" class="messages"
+                            :class="message.status === 'sent' ? 'sent':'recived'">
                             <div>
-
                                 {{ message.message }}
                             </div>
                             <div class="message-time">{{ message.date.slice(11, 16) }}</div>
+
+                            <!-- dropdown messages -->
+                            <div class="dropdown">
+                                <div class="dropdown-button"><i class="fa-solid fa-angle-down"></i>
+                                    <div class="dropdown-show">
+                                        <ul class="dropdown-menu">
+                                            <li @click="infoMessage(index)">Info Messaggio</li>
+                                            <li @click="deleteMessage(index)">Elimina messaggio</li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- send message bar -->
                     <div class="send-message-bar flex">
                         <i class="fa-regular fa-face-smile"></i>
-                        <input type="text" placeholder="Scrivi un messaggio" v-model="messageToSend" @keyup.enter="sendMessage" >
+                        <input type="text" placeholder="Scrivi un messaggio" v-model="messageToSend"
+                            @keyup.enter="sendMessage">
                         <i class="fa-solid fa-microphone"></i>
                     </div>
                 </div>
-            
+
             </section>
         </div>
     </div>

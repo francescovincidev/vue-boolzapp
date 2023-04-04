@@ -7,6 +7,7 @@ console.log(dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'));
 createApp({
     data() {
         return {
+            time:dt.now().setLocale('it'),
             sender: null,
             greySelected:null,
             findChat: "",
@@ -189,7 +190,7 @@ createApp({
             this.sender = this.selectedContact
             if (this.messageToSend.trim() !== "") {
                 this.selectedContact.messages.push({
-                    date: dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
+                    date: this.time.toFormat('dd/MM/yyyy HH:mm:ss'),
                     message: this.messageToSend,
                     status: 'sent'
                 })   
@@ -200,7 +201,7 @@ createApp({
         },
         receiveMessage() {
             this.sender.messages.push({
-                date: dt.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
+                date: this.time.toFormat('dd/MM/yyyy HH:mm:ss'),
                 message: 'ok',
                 status: 'received'
             })
@@ -226,7 +227,10 @@ createApp({
         infoMessage(index){
             alert("Data: " + this.selectedContact.messages[index].date + "\nMessaggio: " + this.selectedContact.messages[index].message + "\nStato: " + this.selectedContact.messages[index].status);
             
-        }
+        },
+         formatDate(dateToFromat){
+             return dt.fromFormat(dateToFromat, "dd/MM/yyyy HH:mm:ss").toLocaleString(dt.TIME_24_SIMPLE)
+         }
 
     },
 

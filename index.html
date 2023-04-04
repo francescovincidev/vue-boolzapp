@@ -72,7 +72,7 @@
                                 <div v-for="(message,index) in contact.messages">
                                     <span class="last-message" v-if="index === contact.messages.length - 1">
                                         {{ message.message }}
-                                        <div class="last-time-sent">{{ message.date.slice(11, 16) }}</div>
+                                        <div class="last-time-sent">{{ formatDate(message.date) }}</div>
                                     </span>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
                             <div>
                                 {{ message.message }}
                             </div>
-                            <div class="message-time">{{ message.date.slice(11, 16) }}</div>
+                            <div class="message-time">{{ formatDate(message.date) }}</div>
 
                             <!-- dropdown messages -->
                             <div class="dropdown">
